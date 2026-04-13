@@ -35,21 +35,29 @@ async function boot() {
   const controller = new AutoFitController();
   app.set('controller', controller);
 
-  try {
-    await controller.init();
-    await controller.login();
-  } catch (e) {
-    activityLog.add('error', `שגיאה בהפעלת דפדפן: ${e.message}`);
+  if (process.env.AUTOFIT_EMAIL) {
+    try {
+      await controller.init();
+      await controller.login();
+    } catch (e) {
+      activityLog.add('error', `שגיאה בהפעלת דפדפן: ${e.message}`);
+    }
+  } else {
+    activityLog.add('info', 'AutoFit credentials לא מוגדרים - דפדפן לא הופעל');
   }
 
   // 3. Init WhatsApp bot
   const whatsapp = new WhatsAppBot(controller);
   app.set('whatsapp', whatsapp);
 
-  try {
-    await whatsapp.start();
-  } catch (e) {
-    activityLog.add('error', `שגיאה בהפעלת WhatsApp: ${e.message}`);
+  if (process.env.GREEN_API_INSTANCE_ID) {
+    try {
+      await whatsapp.start();
+    } catch (e) {
+      activityLog.add('error', `שגיאה בהפעלת WhatsApp: ${e.message}`);
+    }
+  } else {
+    activityLog.add('info', 'GreenAPI credentials לא מוגדרים - WhatsApp לא הופעל');
   }
 
   // 4. Init weekly scheduler

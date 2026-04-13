@@ -114,6 +114,56 @@ router.post('/action/test-weekly', async (req, res) => {
   }
 });
 
+// ============ CREDENTIALS ============
+
+router.get('/credentials', (req, res) => {
+  const creds = settings.get('credentials') || {};
+  // Return masked values so UI knows what's filled
+  res.json({
+    greenApiInstanceId: creds.greenApiInstanceId ? mask(creds.greenApiInstanceId) : '',
+    greenApiToken: creds.greenApiToken ? mask(creds.greenApiToken) : '',
+    allowedNumbers: creds.allowedNumbers || '',
+    autofitEmail: creds.autofitEmail || '',
+    autofitPassword: creds.autofitPassword ? '********' : '',
+    imapHost: creds.imapHost || 'imap.gmail.com',
+    imapUser: creds.imapUser || '',
+    imapPassword: creds.imapPassword ? '********' : ''
+  });
+});
+
+router.post('/credentials', (req, res) => {
+  const incoming = req.body;
+  const current = settings.get('credentials') || {};
+
+  // Only overwrite non-empty fields (so masked values don't erase real ones)
+  const merged = { ...current };
+  for (const [key, val] of Object.entries(incoming)) {
+    if (val && !val.includes('***') && val !== mask(current[key] || '')) {
+      merged[key] = val;
+    }
+  }
+
+  settings.update({ credentials: merged });
+
+  // Also write to process.env so running services pick it up
+  if (merged.greenApiInstanceId) process.env.GREEN_API_INSTANCE_ID = merged.greenApiInstanceId;
+  if (merged.greenApiToken) process.env.GREEN_API_TOKEN = merged.greenApiToken;
+  if (merged.allowedNumbers) process.env.ALLOWED_NUMBERS = merged.allowedNumbers;
+  if (merged.autofitEmail) process.env.AUTOFIT_EMAIL = merged.autofitEmail;
+  if (merged.autofitPassword) process.env.AUTOFIT_PASSWORD = merged.autofitPassword;
+  if (merged.imapHost) process.env.IMAP_HOST = merged.imapHost;
+  if (merged.imapUser) process.env.IMAP_USER = merged.imapUser;
+  if (merged.imapPassword) process.env.IMAP_PASSWORD = merged.imapPassword;
+
+  activityLog.add('info', 'פרטי החיבור עודכנו');
+  res.json({ ok: true });
+});
+
+function mask(str) {
+  if (!str || str.length < 6) return str ? '****' : '';
+  return str.substring(0, 4) + '****' + str.substring(str.length - 2);
+}
+
 // ============ AUTOFIT DATA ============
 
 router.get('/users', async (req, res) => {

@@ -3,747 +3,330 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoFit Agent - לוח בקרה</title>
+<title>AutoFit Agent</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --orange: #FF6B00;
-    --orange-light: #FF8A33;
-    --bg: #F5F5F7;
-    --white: #FFFFFF;
-    --text: #1A1A2E;
-    --text-dim: #6B7280;
-    --green: #22C55E;
-    --green-bg: #F0FDF4;
-    --red: #EF4444;
-    --red-bg: #FEF2F2;
-    --yellow: #F59E0B;
-    --yellow-bg: #FFFBEB;
-    --blue: #3B82F6;
-    --border: #E5E7EB;
-    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-lg: 0 4px 12px rgba(0,0,0,0.1);
-    --radius: 16px;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Heebo', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
-
-  /* ===== HEADER ===== */
-  .header {
-    background: var(--white);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: var(--shadow);
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .logo {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--orange), var(--orange-light));
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 800;
-    font-size: 18px;
-  }
-
-  .header-title {
-    font-size: 20px;
-    font-weight: 700;
-  }
-
-  .header-title span { color: var(--orange); }
-
-  /* ===== MAIN LAYOUT ===== */
-  .main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  /* ===== STATUS BAR ===== */
-  .status-bar {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
-
-  .status-card {
-    background: var(--white);
-    border-radius: var(--radius);
-    padding: 24px;
-    box-shadow: var(--shadow);
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    border-right: 4px solid var(--border);
-    transition: all 0.3s;
-  }
-
-  .status-card.ok { border-right-color: var(--green); }
-  .status-card.error { border-right-color: var(--red); }
-  .status-card.warn { border-right-color: var(--yellow); }
-
-  .status-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    flex-shrink: 0;
-  }
-
-  .status-icon.ok { background: var(--green-bg); }
-  .status-icon.error { background: var(--red-bg); }
-  .status-icon.warn { background: var(--yellow-bg); }
-
-  .status-label {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-bottom: 2px;
-  }
-
-  .status-value {
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  .status-value.ok { color: var(--green); }
-  .status-value.error { color: var(--red); }
-  .status-value.warn { color: var(--yellow); }
-
-  /* ===== POWER BUTTON ===== */
-  .power-section {
-    background: var(--white);
-    border-radius: var(--radius);
-    padding: 32px;
-    box-shadow: var(--shadow);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .power-info h2 {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  .power-info p {
-    color: var(--text-dim);
-    font-size: 15px;
-  }
-
-  .power-btn {
-    width: 80px;
-    height: 44px;
-    border-radius: 22px;
-    border: none;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.3s;
-    background: var(--border);
-  }
-
-  .power-btn.on { background: var(--green); }
-
-  .power-btn::after {
-    content: '';
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: white;
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    transition: all 0.3s;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-  }
-
-  .power-btn.on::after {
-    right: auto;
-    left: 4px;
-  }
-
-  /* ===== SECTIONS GRID ===== */
-  .sections-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-
-  .section {
-    background: var(--white);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
-
-  .section-header {
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .section-title {
-    font-size: 18px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .section-title-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: rgba(255, 107, 0, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }
-
-  .section-body {
-    padding: 24px;
-  }
-
-  /* ===== WEEKLY SETTINGS ===== */
-  .setting-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 0;
-    border-bottom: 1px solid #F3F4F6;
-  }
-
-  .setting-row:last-child { border-bottom: none; }
-
-  .setting-label {
-    font-size: 15px;
-    font-weight: 500;
-  }
-
-  .setting-desc {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-top: 2px;
-  }
-
-  .toggle {
-    width: 52px;
-    height: 28px;
-    border-radius: 14px;
-    border: none;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.3s;
-    background: var(--border);
-    flex-shrink: 0;
-  }
-
-  .toggle.on { background: var(--orange); }
-
-  .toggle::after {
-    content: '';
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: white;
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    transition: all 0.3s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-  }
-
-  .toggle.on::after {
-    right: auto;
-    left: 3px;
-  }
-
-  select, input[type="time"] {
-    padding: 8px 14px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-family: 'Heebo', sans-serif;
-    font-size: 14px;
-    background: var(--bg);
-    color: var(--text);
-    cursor: pointer;
-    direction: rtl;
-  }
-
-  /* ===== ACTIVITY LOG ===== */
-  .log-list {
-    max-height: 400px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .log-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 10px;
-    transition: background 0.2s;
-  }
-
-  .log-item:hover { background: #F9FAFB; }
-
-  .log-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-top: 7px;
-    flex-shrink: 0;
-  }
-
-  .log-dot.info { background: var(--blue); }
-  .log-dot.action { background: var(--orange); }
-  .log-dot.error { background: var(--red); }
-  .log-dot.whatsapp { background: var(--green); }
-  .log-dot.report { background: #8B5CF6; }
-
-  .log-text {
-    font-size: 14px;
-    line-height: 1.5;
-    flex: 1;
-  }
-
-  .log-time {
-    font-size: 12px;
-    color: var(--text-dim);
-    flex-shrink: 0;
-    direction: ltr;
-  }
-
-  .log-empty {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text-dim);
-    font-size: 15px;
-  }
-
-  /* ===== QUICK ACTIONS ===== */
-  .actions-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .action-btn {
-    padding: 16px 20px;
-    border-radius: 14px;
-    border: 2px solid var(--border);
-    background: var(--white);
-    cursor: pointer;
-    font-family: 'Heebo', sans-serif;
-    text-align: center;
-    transition: all 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .action-btn:hover {
-    border-color: var(--orange);
-    background: rgba(255, 107, 0, 0.03);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .action-btn:active {
-    transform: translateY(0);
-  }
-
-  .action-btn-icon {
-    font-size: 28px;
-  }
-
-  .action-btn-label {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .action-btn-desc {
-    font-size: 12px;
-    color: var(--text-dim);
-  }
-
-  /* ===== MODAL ===== */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(4px);
-  }
-
-  .modal-overlay.show { display: flex; }
-
-  .modal {
-    background: var(--white);
-    border-radius: 20px;
-    padding: 32px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-  }
-
-  .modal h3 {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 20px;
-  }
-
-  .modal-field {
-    margin-bottom: 16px;
-  }
-
-  .modal-field label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--text);
-  }
-
-  .modal-field input,
-  .modal-field textarea,
-  .modal-field select {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    font-family: 'Heebo', sans-serif;
-    font-size: 15px;
-    resize: vertical;
-    direction: rtl;
-  }
-
-  .modal-field textarea { min-height: 100px; }
-
-  .modal-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 24px;
-  }
-
-  .btn {
-    padding: 12px 28px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    font-family: 'Heebo', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    transition: all 0.2s;
-  }
-
-  .btn-primary {
-    background: var(--orange);
-    color: white;
-  }
-
-  .btn-primary:hover { background: var(--orange-light); }
-
-  .btn-secondary {
-    background: var(--bg);
-    color: var(--text);
-  }
-
-  .btn-secondary:hover { background: var(--border); }
-
-  /* ===== FULL WIDTH SECTION ===== */
-  .full-width { grid-column: 1 / -1; }
-
-  /* ===== TEMPLATE EDITOR ===== */
-  .template-box {
-    width: 100%;
-    min-height: 160px;
-    padding: 16px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    font-family: 'Heebo', sans-serif;
-    font-size: 14px;
-    line-height: 1.8;
-    resize: vertical;
-    direction: rtl;
-  }
-
-  .template-hint {
-    font-size: 12px;
-    color: var(--text-dim);
-    margin-top: 8px;
-    line-height: 1.6;
-  }
-
-  .save-btn {
-    margin-top: 16px;
-    padding: 10px 32px;
-    background: var(--orange);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-family: 'Heebo', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .save-btn:hover { background: var(--orange-light); }
-
-  /* ===== TOAST ===== */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: var(--text);
-    color: white;
-    padding: 14px 28px;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 500;
-    z-index: 300;
-    transition: transform 0.3s;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-  }
-
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
-  /* ===== RESPONSIVE ===== */
-  @media (max-width: 768px) {
-    .status-bar { grid-template-columns: 1fr; }
-    .sections-grid { grid-template-columns: 1fr; }
-    .actions-grid { grid-template-columns: 1fr; }
-    .header { padding: 12px 16px; }
-    .main { padding: 16px; }
-  }
+:root {
+  --orange: #FF6B00;
+  --orange-light: #FF8A33;
+  --orange-dim: rgba(255,107,0,0.12);
+  --bg: #0B0D13;
+  --bg-sidebar: #10121A;
+  --bg-card: #161923;
+  --bg-input: #1C1F2E;
+  --bg-hover: #1E2235;
+  --text: #E4E4EC;
+  --text-dim: #6C7086;
+  --border: rgba(255,255,255,0.06);
+  --green: #34D399;
+  --green-dim: rgba(52,211,153,0.12);
+  --red: #F87171;
+  --red-dim: rgba(248,113,113,0.12);
+  --yellow: #FBBF24;
+  --radius: 12px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex}
+
+/* ========== SIDEBAR ========== */
+.sidebar{width:240px;background:var(--bg-sidebar);border-left:1px solid var(--border);display:flex;flex-direction:column;height:100vh;flex-shrink:0}
+.sidebar-logo{padding:24px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.sidebar-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--orange),var(--orange-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff}
+.sidebar-logo-text{font-size:16px;font-weight:700}
+.sidebar-logo-text span{color:var(--orange)}
+.sidebar-nav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:2px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text-dim);transition:all .15s}
+.nav-item:hover{background:var(--bg-hover);color:var(--text)}
+.nav-item.active{background:var(--orange-dim);color:var(--orange);font-weight:600}
+.nav-item svg{width:18px;height:18px;flex-shrink:0}
+.nav-section{font-size:11px;color:var(--text-dim);padding:16px 14px 6px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-dot.on{background:var(--green);box-shadow:0 0 8px rgba(52,211,153,.4)}
+.status-dot.off{background:var(--red);box-shadow:0 0 8px rgba(248,113,113,.4)}
+.sidebar-footer-text{font-size:12px;color:var(--text-dim)}
+
+/* ========== MAIN ========== */
+.main-wrapper{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* Topbar */
+.topbar{height:56px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0}
+.topbar-title{font-size:18px;font-weight:700}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.topbar-status{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500}
+.topbar-status.ok{background:var(--green-dim);color:var(--green)}
+.topbar-status.err{background:var(--red-dim);color:var(--red)}
+
+/* Content */
+.content{flex:1;overflow-y:auto;padding:28px}
+.page{display:none}
+.page.active{display:block}
+
+/* ========== CARDS / GRID ========== */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;transition:border-color .2s}
+.card:hover{border-color:rgba(255,255,255,.1)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.card-title svg{color:var(--orange);width:16px;height:16px}
+
+/* Stat cards */
+.stat{text-align:center;padding:28px 20px}
+.stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:20px}
+.stat-icon.ok{background:var(--green-dim);color:var(--green)}
+.stat-icon.err{background:var(--red-dim);color:var(--red)}
+.stat-icon.warn{background:rgba(251,191,36,.12);color:var(--yellow)}
+.stat-label{font-size:12px;color:var(--text-dim);margin-bottom:4px}
+.stat-value{font-size:20px;font-weight:700}
+.stat-value.ok{color:var(--green)}
+.stat-value.err{color:var(--red)}
+
+/* Toggle */
+.toggle{width:44px;height:24px;border-radius:12px;border:none;cursor:pointer;position:relative;transition:all .2s;background:rgba(255,255,255,.1);flex-shrink:0}
+.toggle.on{background:var(--orange)}
+.toggle::after{content:'';width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:3px;right:3px;transition:all .2s}
+.toggle.on::after{right:auto;left:3px}
+
+/* Big power toggle */
+.power-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:24px}
+.power-info h3{font-size:16px;font-weight:700;margin-bottom:2px}
+.power-info p{font-size:13px;color:var(--text-dim)}
+.power-btn{width:64px;height:34px;border-radius:17px;border:none;cursor:pointer;position:relative;transition:all .2s;background:rgba(255,255,255,.1)}
+.power-btn.on{background:var(--green)}
+.power-btn::after{content:'';width:28px;height:28px;border-radius:50%;background:#fff;position:absolute;top:3px;right:3px;transition:all .2s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.power-btn.on::after{right:auto;left:3px}
+
+/* Action buttons */
+.actions-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.action-btn{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 16px;cursor:pointer;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:10px}
+.action-btn:hover{border-color:var(--orange);background:rgba(255,107,0,.04);transform:translateY(-1px)}
+.action-btn svg{color:var(--orange)}
+.action-btn-label{font-size:13px;font-weight:600;color:var(--text)}
+.action-btn-desc{font-size:11px;color:var(--text-dim)}
+
+/* Settings rows */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:14px;font-weight:500}
+.setting-desc{font-size:12px;color:var(--text-dim);margin-top:2px}
+select,input[type="time"]{padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-family:'Heebo';font-size:13px;background:var(--bg-input);color:var(--text);cursor:pointer;direction:rtl}
+
+/* Input fields */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:500;margin-bottom:5px;color:var(--text-dim)}
+.field input,.field textarea{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-family:'Heebo';font-size:14px;background:var(--bg-input);color:var(--text);transition:border-color .2s}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--orange)}
+.field textarea{min-height:120px;resize:vertical}
+.field .hint{font-size:11px;color:var(--text-dim);margin-top:4px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* Buttons */
+.btn{padding:10px 24px;border-radius:8px;border:none;cursor:pointer;font-family:'Heebo';font-size:14px;font-weight:600;transition:all .15s}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:var(--orange-light)}
+.btn-ghost{background:transparent;color:var(--text-dim);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--bg-hover);color:var(--text)}
+
+/* Log */
+.log-list{max-height:500px;overflow-y:auto}
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:8px;transition:background .15s}
+.log-item:hover{background:var(--bg-hover)}
+.log-dot{width:6px;height:6px;border-radius:50%;margin-top:8px;flex-shrink:0}
+.log-dot.info{background:#60A5FA}
+.log-dot.action{background:var(--orange)}
+.log-dot.error{background:var(--red)}
+.log-dot.whatsapp{background:var(--green)}
+.log-dot.report{background:#A78BFA}
+.log-text{font-size:13px;flex:1;line-height:1.5;color:var(--text-dim)}
+.log-time{font-size:11px;color:rgba(255,255,255,.2);direction:ltr;flex-shrink:0}
+.log-empty{text-align:center;padding:40px;color:var(--text-dim);font-size:14px}
+
+/* Cred groups */
+.cred-group{margin-bottom:24px}
+.cred-group-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.cred-group-header h4{font-size:15px;font-weight:700}
+.cred-group-header svg{width:18px;height:18px}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px;width:90%;max-width:460px}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:18px}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:12px 24px;border-radius:10px;font-size:14px;z-index:300;transition:transform .3s;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.15)}
+
+@media(max-width:900px){.sidebar{display:none}.actions-grid{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}.field-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-right">
-    <div class="logo">AF</div>
-    <div class="header-title">לוח בקרה <span>AutoFit Agent</span></div>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">AF</div>
+    <div class="sidebar-logo-text"><span>AutoFit</span> Agent</div>
   </div>
-</div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">ראשי</div>
+    <div class="nav-item active" data-page="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      דשבורד
+    </div>
+    <div class="nav-item" data-page="actions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      פעולות
+    </div>
+    <div class="nav-section">הגדרות</div>
+    <div class="nav-item" data-page="weekly">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      עדכון שבועי
+    </div>
+    <div class="nav-item" data-page="connections">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      חיבורים
+    </div>
+    <div class="nav-section">מערכת</div>
+    <div class="nav-item" data-page="logs">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+      לוג פעילות
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="status-dot on" id="footer-dot"></div>
+    <div class="sidebar-footer-text" id="footer-status">הסוכן פעיל</div>
+  </div>
+</aside>
 
 <!-- MAIN -->
-<div class="main">
-
-  <!-- STATUS BAR -->
-  <div class="status-bar">
-    <div class="status-card" id="status-agent">
-      <div class="status-icon warn">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      </div>
-      <div>
-        <div class="status-label">הסוכן</div>
-        <div class="status-value" id="status-agent-text">בודק...</div>
-      </div>
+<div class="main-wrapper">
+  <header class="topbar">
+    <div class="topbar-title" id="page-title">דשבורד</div>
+    <div class="topbar-right">
+      <div class="topbar-status" id="topbar-autofit"><span class="status-dot err" style="margin-left:6px"></span>AutoFit</div>
+      <div class="topbar-status" id="topbar-whatsapp"><span class="status-dot err" style="margin-left:6px"></span>WhatsApp</div>
     </div>
-    <div class="status-card" id="status-autofit">
-      <div class="status-icon warn">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-      </div>
-      <div>
-        <div class="status-label">חיבור AutoFit</div>
-        <div class="status-value" id="status-autofit-text">בודק...</div>
-      </div>
-    </div>
-    <div class="status-card" id="status-whatsapp">
-      <div class="status-icon warn">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-      </div>
-      <div>
-        <div class="status-label">WhatsApp</div>
-        <div class="status-value" id="status-whatsapp-text">בודק...</div>
-      </div>
-    </div>
-  </div>
+  </header>
 
-  <!-- POWER TOGGLE -->
-  <div class="power-section">
-    <div class="power-info">
-      <h2>הפעלה / כיבוי הסוכן</h2>
-      <p>כשהסוכן פעיל הוא מגיב להודעות בוואטסאפ ושולח עדכונים שבועיים</p>
-    </div>
-    <button class="power-btn on" id="power-btn" onclick="toggleAgent()"></button>
-  </div>
+  <div class="content">
 
-  <!-- SECTIONS GRID -->
-  <div class="sections-grid">
+    <!-- PAGE: DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="power-row">
+        <div class="power-info">
+          <h3>הפעלה / כיבוי הסוכן</h3>
+          <p>כשפעיל - מגיב להודעות בוואטסאפ ושולח עדכונים</p>
+        </div>
+        <button class="power-btn on" id="power-btn" onclick="toggleAgent()"></button>
+      </div>
 
-    <!-- QUICK ACTIONS -->
-    <div class="section">
-      <div class="section-header">
-        <div class="section-title">
-          <div class="section-title-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <div class="grid-3">
+        <div class="card stat" id="stat-agent">
+          <div class="stat-icon ok">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
           </div>
-          פעולות מהירות
+          <div class="stat-label">הסוכן</div>
+          <div class="stat-value ok" id="val-agent">פעיל</div>
+        </div>
+        <div class="card stat" id="stat-autofit">
+          <div class="stat-icon err">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <div class="stat-label">חיבור AutoFit</div>
+          <div class="stat-value err" id="val-autofit">לא מחובר</div>
+        </div>
+        <div class="card stat" id="stat-wa">
+          <div class="stat-icon err">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </div>
+          <div class="stat-label">WhatsApp</div>
+          <div class="stat-value err" id="val-wa">לא מחובר</div>
         </div>
       </div>
-      <div class="section-body">
-        <div class="actions-grid">
-          <button class="action-btn" onclick="openSendModal()">
-            <div class="action-btn-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="1.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+            פעילות אחרונה
+          </div>
+        </div>
+        <div class="log-list" id="dash-log" style="max-height:260px"></div>
+      </div>
+    </div>
+
+    <!-- PAGE: ACTIONS -->
+    <div class="page" id="page-actions">
+      <div class="actions-grid">
+        <div class="action-btn" onclick="openModal('send-modal')">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          <div class="action-btn-label">שליחת הודעה</div>
+          <div class="action-btn-desc">שלח הודעה ללקוחות</div>
+        </div>
+        <div class="action-btn" onclick="openModal('todo-modal')">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>
+          <div class="action-btn-label">הוספת משימה</div>
+          <div class="action-btn-desc">הוסף לרשימת המשימות</div>
+        </div>
+        <div class="action-btn" onclick="testWeekly()">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <div class="action-btn-label">עדכון שבועי</div>
+          <div class="action-btn-desc">שלח עכשיו לכולם</div>
+        </div>
+        <div class="action-btn" onclick="refreshStatus()">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          <div class="action-btn-label">רענון</div>
+          <div class="action-btn-desc">בדוק חיבורים</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: WEEKLY -->
+    <div class="page" id="page-weekly">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              הגדרות עדכון שבועי
             </div>
-            <div class="action-btn-label">שליחת הודעה</div>
-            <div class="action-btn-desc">שלח הודעה ללקוחות</div>
-          </button>
-          <button class="action-btn" onclick="openTodoModal()">
-            <div class="action-btn-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>
+            <button class="toggle on" id="weekly-toggle" onclick="toggleWeekly()"></button>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">יום שליחה</div><div class="setting-desc">באיזה יום לשלוח</div></div>
+            <select id="weekly-day" onchange="saveWeeklySettings()">
+              <option value="0">ראשון</option><option value="1">שני</option><option value="2">שלישי</option><option value="3">רביעי</option><option value="4">חמישי</option><option value="5">שישי</option><option value="6">שבת</option>
+            </select>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">שעת שליחה</div></div>
+            <input type="time" id="weekly-time" value="09:00" onchange="saveWeeklySettings()">
+          </div>
+          <div class="setting-row"><div><div class="setting-label">משקל</div></div><button class="toggle on" data-metric="weight" onclick="toggleMetric(this)"></button></div>
+          <div class="setting-row"><div><div class="setting-label">צעדים</div></div><button class="toggle on" data-metric="steps" onclick="toggleMetric(this)"></button></div>
+          <div class="setting-row"><div><div class="setting-label">אימונים</div></div><button class="toggle on" data-metric="training" onclick="toggleMetric(this)"></button></div>
+          <div class="setting-row"><div><div class="setting-label">תזונה</div></div><button class="toggle on" data-metric="nutrition" onclick="toggleMetric(this)"></button></div>
+          <div class="setting-row"><div><div class="setting-label">שתייה</div></div><button class="toggle on" data-metric="water" onclick="toggleMetric(this)"></button></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              תבנית הודעה
             </div>
-            <div class="action-btn-label">הוספת משימה</div>
-            <div class="action-btn-desc">הוסף לרשימת המשימות</div>
-          </button>
-          <button class="action-btn" onclick="testWeekly()">
-            <div class="action-btn-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-            </div>
-            <div class="action-btn-label">שליחת עדכון שבועי</div>
-            <div class="action-btn-desc">שלח עכשיו לכולם</div>
-          </button>
-          <button class="action-btn" onclick="refreshStatus()">
-            <div class="action-btn-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="1.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-            </div>
-            <div class="action-btn-label">רענון</div>
-            <div class="action-btn-desc">בדוק חיבורים מחדש</div>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- WEEKLY REPORT SETTINGS -->
-    <div class="section">
-      <div class="section-header">
-        <div class="section-title">
-          <div class="section-title-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
           </div>
-          עדכון שבועי
-        </div>
-        <button class="toggle on" id="weekly-toggle" onclick="toggleWeekly()"></button>
-      </div>
-      <div class="section-body">
-        <div class="setting-row">
-          <div>
-            <div class="setting-label">יום שליחה</div>
-            <div class="setting-desc">באיזה יום לשלוח את העדכון</div>
-          </div>
-          <select id="weekly-day" onchange="saveWeeklySettings()">
-            <option value="0">יום ראשון</option>
-            <option value="1">יום שני</option>
-            <option value="2">יום שלישי</option>
-            <option value="3">יום רביעי</option>
-            <option value="4">יום חמישי</option>
-            <option value="5">יום שישי</option>
-            <option value="6">שבת</option>
-          </select>
-        </div>
-        <div class="setting-row">
-          <div>
-            <div class="setting-label">שעת שליחה</div>
-            <div class="setting-desc">באיזו שעה לשלוח</div>
-          </div>
-          <input type="time" id="weekly-time" value="09:00" onchange="saveWeeklySettings()">
-        </div>
-        <div class="setting-row">
-          <div>
-            <div class="setting-label">משקל</div>
-            <div class="setting-desc">כלול מעקב משקל בעדכון</div>
-          </div>
-          <button class="toggle on" data-metric="weight" onclick="toggleMetric(this)"></button>
-        </div>
-        <div class="setting-row">
-          <div>
-            <div class="setting-label">צעדים</div>
-            <div class="setting-desc">כלול מעקב צעדים בעדכון</div>
-          </div>
-          <button class="toggle on" data-metric="steps" onclick="toggleMetric(this)"></button>
-        </div>
-        <div class="setting-row">
-          <div>
-            <div class="setting-label">אימונים</div>
-            <div class="setting-desc">כלול מעקב אימונים בעדכון</div>
-          </div>
-          <button class="toggle on" data-metric="training" onclick="toggleMetric(this)"></button>
-        </div>
-        <div class="setting-row">
-          <div>
-            <div class="setting-label">תזונה</div>
-            <div class="setting-desc">כלול מעקב תזונה בעדכון</div>
-          </div>
-          <button class="toggle on" data-metric="nutrition" onclick="toggleMetric(this)"></button>
-        </div>
-        <div class="setting-row">
-          <div>
-            <div class="setting-label">שתייה</div>
-            <div class="setting-desc">כלול מעקב שתייה בעדכון</div>
-          </div>
-          <button class="toggle on" data-metric="water" onclick="toggleMetric(this)"></button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MESSAGE TEMPLATE -->
-    <div class="section full-width">
-      <div class="section-header">
-        <div class="section-title">
-          <div class="section-title-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          </div>
-          תבנית הודעה שבועית
-        </div>
-      </div>
-      <div class="section-body">
-        <textarea class="template-box" id="template-editor">שלום {name},
+          <div class="field">
+            <textarea id="template-editor" style="min-height:200px">שלום {name},
 
 סיכום השבוע שלך:
 {metrics}
@@ -751,295 +334,173 @@
 {personalMessage}
 
 המאמן שלך</textarea>
-        <div class="template-hint">
-          <strong>משתנים שאפשר להשתמש:</strong> {name} = שם הלקוח, {metrics} = נתוני המעקב, {personalMessage} = הודעה מותאמת אישית לפי הביצועים
+            <div class="hint">{name} = שם הלקוח, {metrics} = נתוני מעקב, {personalMessage} = הודעה מותאמת</div>
+          </div>
+          <button class="btn btn-primary" onclick="saveTemplate()">שמור תבנית</button>
         </div>
-        <button class="save-btn" onclick="saveTemplate()">שמור תבנית</button>
       </div>
     </div>
 
-    <!-- ACTIVITY LOG -->
-    <div class="section full-width">
-      <div class="section-header">
-        <div class="section-title">
-          <div class="section-title-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+    <!-- PAGE: CONNECTIONS -->
+    <div class="page" id="page-connections">
+      <div class="grid-2">
+        <div class="card">
+          <div class="cred-group-header" style="color:var(--green)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <h4>WhatsApp (GreenAPI)</h4>
           </div>
-          מה הסוכן עשה לאחרונה
+          <div class="field"><label>Instance ID</label><input type="text" id="cred-greenapi-id" placeholder="1101234567" dir="ltr"></div>
+          <div class="field"><label>API Token</label><input type="text" id="cred-greenapi-token" placeholder="abc123def456..." dir="ltr"></div>
+          <div class="field"><label>מספרי טלפון מורשים</label><input type="text" id="cred-allowed-numbers" placeholder="972501234567,972509876543" dir="ltr"><div class="hint">מופרדים בפסיק, פורמט בינלאומי (972...)</div></div>
+        </div>
+        <div class="card">
+          <div class="cred-group-header" style="color:#60A5FA">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <h4>AutoFit + מייל</h4>
+          </div>
+          <div class="field"><label>אימייל AutoFit</label><input type="email" id="cred-autofit-email" placeholder="your@email.com" dir="ltr"></div>
+          <div class="field"><label>סיסמת AutoFit</label><input type="password" id="cred-autofit-password" placeholder="********" dir="ltr"></div>
+          <div class="field"><label>שרת מייל (IMAP)</label><input type="text" id="cred-imap-host" value="imap.gmail.com" dir="ltr"></div>
+          <div class="field"><label>אימייל לקודי אימות</label><input type="email" id="cred-imap-user" placeholder="your@gmail.com" dir="ltr"></div>
+          <div class="field"><label>סיסמת אפליקציה</label><input type="password" id="cred-imap-password" placeholder="xxxx xxxx xxxx xxxx" dir="ltr"><div class="hint">App Password מגוגל, לא הסיסמה הרגילה</div></div>
         </div>
       </div>
-      <div class="section-body">
-        <div class="log-list" id="log-list">
-          <div class="log-empty">טוען...</div>
+      <button class="btn btn-primary" onclick="saveCredentials()" style="margin-top:4px">שמור פרטי חיבור</button>
+      <span id="cred-status" style="margin-right:12px;font-size:13px;color:var(--text-dim)"></span>
+    </div>
+
+    <!-- PAGE: LOGS -->
+    <div class="page" id="page-logs">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+            לוג פעילות מלא
+          </div>
+          <button class="btn btn-ghost" onclick="clearLogs()" style="font-size:12px;padding:6px 14px">נקה לוג</button>
         </div>
+        <div class="log-list" id="full-log"></div>
       </div>
     </div>
 
   </div>
 </div>
 
-<!-- SEND MESSAGE MODAL -->
+<!-- MODALS -->
 <div class="modal-overlay" id="send-modal">
   <div class="modal">
-    <h3>שליחת הודעה ללקוחות</h3>
-    <div class="modal-field">
-      <label>למי לשלוח?</label>
-      <select id="send-target">
-        <option value="all">כל הלקוחות</option>
-      </select>
-    </div>
-    <div class="modal-field">
-      <label>כותרת</label>
-      <input type="text" id="send-title" placeholder="למשל: עדכון חשוב">
-    </div>
-    <div class="modal-field">
-      <label>תוכן ההודעה</label>
-      <textarea id="send-body" placeholder="כתוב כאן את ההודעה..."></textarea>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-primary" onclick="sendMessage()">שלח</button>
-      <button class="btn btn-secondary" onclick="closeModal('send-modal')">ביטול</button>
-    </div>
+    <h3>שליחת הודעה</h3>
+    <div class="field"><label>למי?</label><select id="send-target" style="width:100%"><option value="all">כל הלקוחות</option></select></div>
+    <div class="field"><label>כותרת</label><input type="text" id="send-title" placeholder="עדכון חשוב"></div>
+    <div class="field"><label>תוכן</label><textarea id="send-body" placeholder="כתוב כאן..." style="min-height:80px"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="sendMessage()">שלח</button><button class="btn btn-ghost" onclick="closeModal('send-modal')">ביטול</button></div>
   </div>
 </div>
-
-<!-- ADD TODO MODAL -->
 <div class="modal-overlay" id="todo-modal">
   <div class="modal">
     <h3>הוספת משימה</h3>
-    <div class="modal-field">
-      <label>מה צריך לעשות?</label>
-      <input type="text" id="todo-text" placeholder="למשל: להתקשר ללקוח חדש">
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-primary" onclick="addTodo()">הוסף</button>
-      <button class="btn btn-secondary" onclick="closeModal('todo-modal')">ביטול</button>
-    </div>
+    <div class="field"><label>מה צריך לעשות?</label><input type="text" id="todo-text" placeholder="להתקשר ללקוח חדש"></div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="addTodo()">הוסף</button><button class="btn btn-ghost" onclick="closeModal('todo-modal')">ביטול</button></div>
   </div>
 </div>
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-  // ===== API HELPERS =====
-  async function api(method, path, body) {
-    const opts = { method, headers: { 'Content-Type': 'application/json' } };
-    if (body) opts.body = JSON.stringify(body);
-    const res = await fetch('/api' + path, opts);
-    return res.json();
-  }
-
-  // ===== TOAST =====
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-  }
-
-  // ===== STATUS =====
-  async function refreshStatus() {
-    try {
-      const data = await api('GET', '/status');
-      updateStatusCard('status-agent', data.agent.running, data.agent.running ? 'פעיל' : 'כבוי');
-      updateStatusCard('status-autofit', data.autofit.connected, data.autofit.connected ? 'מחובר' : 'לא מחובר');
-      updateStatusCard('status-whatsapp', data.whatsapp.connected, data.whatsapp.connected ? 'מחובר' : 'לא מחובר');
-
-      const powerBtn = document.getElementById('power-btn');
-      powerBtn.classList.toggle('on', data.agent.running);
-    } catch (e) {
-      updateStatusCard('status-agent', null, 'שגיאה');
-    }
-  }
-
-  function updateStatusCard(id, ok, text) {
-    const card = document.getElementById(id);
-    const icon = card.querySelector('.status-icon');
-    const value = card.querySelector('.status-value');
-
-    card.className = 'status-card ' + (ok === true ? 'ok' : ok === false ? 'error' : 'warn');
-    icon.className = 'status-icon ' + (ok === true ? 'ok' : ok === false ? 'error' : 'warn');
-    value.className = 'status-value ' + (ok === true ? 'ok' : ok === false ? 'error' : 'warn');
-    value.textContent = text;
-  }
-
-  // ===== AGENT TOGGLE =====
-  async function toggleAgent() {
-    const data = await api('POST', '/agent/toggle');
-    const btn = document.getElementById('power-btn');
-    btn.classList.toggle('on', data.enabled);
-    showToast(data.enabled ? 'הסוכן הופעל' : 'הסוכן הושבת');
-    refreshStatus();
-    loadLogs();
-  }
-
-  // ===== WEEKLY SETTINGS =====
-  async function toggleWeekly() {
-    const toggle = document.getElementById('weekly-toggle');
-    toggle.classList.toggle('on');
-    const enabled = toggle.classList.contains('on');
-    await api('POST', '/settings', { weeklyReport: { enabled } });
-    showToast(enabled ? 'עדכון שבועי הופעל' : 'עדכון שבועי הושבת');
-  }
-
-  function toggleMetric(btn) {
-    btn.classList.toggle('on');
-    saveWeeklySettings();
-  }
-
-  async function saveWeeklySettings() {
-    const metrics = {};
-    document.querySelectorAll('[data-metric]').forEach(btn => {
-      metrics[btn.dataset.metric] = btn.classList.contains('on');
-    });
-
-    await api('POST', '/settings', {
-      weeklyReport: {
-        dayOfWeek: parseInt(document.getElementById('weekly-day').value),
-        time: document.getElementById('weekly-time').value,
-        metrics
-      }
-    });
-    showToast('ההגדרות נשמרו');
-  }
-
-  // ===== TEMPLATE =====
-  async function saveTemplate() {
-    const template = document.getElementById('template-editor').value;
-    await api('POST', '/settings', { messageTemplate: template });
-    showToast('התבנית נשמרה');
-  }
-
-  // ===== LOGS =====
-  async function loadLogs() {
-    try {
-      const logs = await api('GET', '/logs?count=30');
-      const list = document.getElementById('log-list');
-
-      if (!logs.length) {
-        list.innerHTML = '<div class="log-empty">אין פעילות עדיין</div>';
-        return;
-      }
-
-      list.innerHTML = logs.map(log => {
-        const date = new Date(log.timestamp);
-        const time = date.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
-        const day = date.toLocaleDateString('he-IL', { day: 'numeric', month: 'short' });
-        return `
-          <div class="log-item">
-            <div class="log-dot ${log.type}"></div>
-            <div class="log-text">${log.message}</div>
-            <div class="log-time">${day} ${time}</div>
-          </div>
-        `;
-      }).join('');
-    } catch (e) {
-      document.getElementById('log-list').innerHTML = '<div class="log-empty">שגיאה בטעינת הלוג</div>';
-    }
-  }
-
-  // ===== MODALS =====
-  function openSendModal() {
-    document.getElementById('send-modal').classList.add('show');
-  }
-
-  function openTodoModal() {
-    document.getElementById('todo-modal').classList.add('show');
-  }
-
-  function closeModal(id) {
-    document.getElementById(id).classList.remove('show');
-  }
-
-  // Close modal on outside click
-  document.querySelectorAll('.modal-overlay').forEach(overlay => {
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) overlay.classList.remove('show');
-    });
+// ===== NAV =====
+const pageTitles={dashboard:'דשבורד',actions:'פעולות',weekly:'עדכון שבועי',connections:'חיבורים',logs:'לוג פעילות'};
+document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
+  item.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    item.classList.add('active');
+    const page=item.dataset.page;
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-'+page).classList.add('active');
+    document.getElementById('page-title').textContent=pageTitles[page]||page;
+    if(page==='logs')loadLogs('full-log',100);
   });
+});
 
-  // ===== ACTIONS =====
-  async function sendMessage() {
-    const target = document.getElementById('send-target').value;
-    const title = document.getElementById('send-title').value;
-    const body = document.getElementById('send-body').value;
+// ===== API =====
+async function api(m,p,b){const o={method:m,headers:{'Content-Type':'application/json'}};if(b)o.body=JSON.stringify(b);const r=await fetch('/api'+p,o);return r.json();}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function openModal(id){document.getElementById(id).classList.add('show');}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show');});});
 
-    if (!title || !body) { showToast('יש למלא כותרת ותוכן'); return; }
+// ===== STATUS =====
+async function refreshStatus(){
+  try{
+    const d=await api('GET','/status');
+    setStat('stat-agent','val-agent',d.agent.running,'פעיל','כבוי');
+    setStat('stat-autofit','val-autofit',d.autofit.connected,'מחובר','לא מחובר');
+    setStat('stat-wa','val-wa',d.whatsapp.connected,'מחובר','לא מחובר');
+    document.getElementById('power-btn').classList.toggle('on',d.agent.running);
+    setTopbar('topbar-autofit',d.autofit.connected);
+    setTopbar('topbar-whatsapp',d.whatsapp.connected);
+    const dot=document.getElementById('footer-dot');
+    const ft=document.getElementById('footer-status');
+    dot.className='status-dot '+(d.agent.running?'on':'off');
+    ft.textContent=d.agent.running?'הסוכן פעיל':'הסוכן כבוי';
+  }catch(e){}
+}
+function setStat(cardId,valId,ok,yesText,noText){
+  const card=document.getElementById(cardId);
+  const val=document.getElementById(valId);
+  const icon=card.querySelector('.stat-icon');
+  const cls=ok?'ok':'err';
+  icon.className='stat-icon '+cls;
+  val.className='stat-value '+cls;
+  val.textContent=ok?yesText:noText;
+}
+function setTopbar(id,ok){
+  const el=document.getElementById(id);
+  el.className='topbar-status '+(ok?'ok':'err');
+  el.querySelector('.status-dot').className='status-dot '+(ok?'on':'off');
+}
 
-    try {
-      await api('POST', '/action/send-message', { target, title, body });
-      showToast('ההודעה נשלחה');
-      closeModal('send-modal');
-      document.getElementById('send-title').value = '';
-      document.getElementById('send-body').value = '';
-      loadLogs();
-    } catch (e) {
-      showToast('שגיאה בשליחה');
-    }
-  }
+// ===== AGENT =====
+async function toggleAgent(){const d=await api('POST','/agent/toggle');document.getElementById('power-btn').classList.toggle('on',d.enabled);showToast(d.enabled?'הסוכן הופעל':'הסוכן הושבת');refreshStatus();loadLogs('dash-log',8);}
 
-  async function addTodo() {
-    const text = document.getElementById('todo-text').value;
-    if (!text) { showToast('יש לכתוב משימה'); return; }
+// ===== WEEKLY =====
+async function toggleWeekly(){const t=document.getElementById('weekly-toggle');t.classList.toggle('on');await api('POST','/settings',{weeklyReport:{enabled:t.classList.contains('on')}});showToast('נשמר');}
+function toggleMetric(b){b.classList.toggle('on');saveWeeklySettings();}
+async function saveWeeklySettings(){const m={};document.querySelectorAll('[data-metric]').forEach(b=>{m[b.dataset.metric]=b.classList.contains('on');});await api('POST','/settings',{weeklyReport:{dayOfWeek:+document.getElementById('weekly-day').value,time:document.getElementById('weekly-time').value,metrics:m}});showToast('נשמר');}
+async function saveTemplate(){await api('POST','/settings',{messageTemplate:document.getElementById('template-editor').value});showToast('התבנית נשמרה');}
+async function testWeekly(){showToast('שולח...');try{const r=await api('POST','/action/test-weekly');showToast('נשלחו '+(r.sent||0)+' עדכונים');}catch(e){showToast('שגיאה');}}
 
-    try {
-      await api('POST', '/action/add-todo', { text });
-      showToast('המשימה נוספה');
-      closeModal('todo-modal');
-      document.getElementById('todo-text').value = '';
-      loadLogs();
-    } catch (e) {
-      showToast('שגיאה בהוספה');
-    }
-  }
+// ===== LOGS =====
+async function loadLogs(target,count){
+  try{
+    const logs=await api('GET','/logs?count='+(count||50));
+    const el=document.getElementById(target);
+    if(!logs.length){el.innerHTML='<div class="log-empty">אין פעילות עדיין</div>';return;}
+    el.innerHTML=logs.map(l=>{
+      const d=new Date(l.timestamp);
+      const t=d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
+      const day=d.toLocaleDateString('he-IL',{day:'numeric',month:'short'});
+      return `<div class="log-item"><div class="log-dot ${l.type}"></div><div class="log-text">${l.message}</div><div class="log-time">${day} ${t}</div></div>`;
+    }).join('');
+  }catch(e){document.getElementById(target).innerHTML='<div class="log-empty">שגיאה</div>';}
+}
+async function clearLogs(){await api('DELETE','/logs');loadLogs('full-log',100);loadLogs('dash-log',8);showToast('הלוג נוקה');}
 
-  async function testWeekly() {
-    showToast('שולח עדכונים שבועיים...');
-    try {
-      const result = await api('POST', '/action/test-weekly');
-      showToast(`נשלחו ${result.sent || 0} עדכונים`);
-      loadLogs();
-    } catch (e) {
-      showToast('שגיאה בשליחה');
-    }
-  }
+// ===== CREDENTIALS =====
+async function loadCredentials(){try{const c=await api('GET','/credentials');if(c.greenApiInstanceId)document.getElementById('cred-greenapi-id').value=c.greenApiInstanceId;if(c.greenApiToken)document.getElementById('cred-greenapi-token').value=c.greenApiToken;if(c.allowedNumbers)document.getElementById('cred-allowed-numbers').value=c.allowedNumbers;if(c.autofitEmail)document.getElementById('cred-autofit-email').value=c.autofitEmail;if(c.autofitPassword)document.getElementById('cred-autofit-password').value=c.autofitPassword;if(c.imapHost)document.getElementById('cred-imap-host').value=c.imapHost;if(c.imapUser)document.getElementById('cred-imap-user').value=c.imapUser;if(c.imapPassword)document.getElementById('cred-imap-password').value=c.imapPassword;}catch(e){}}
+async function saveCredentials(){
+  const d={greenApiInstanceId:document.getElementById('cred-greenapi-id').value.trim(),greenApiToken:document.getElementById('cred-greenapi-token').value.trim(),allowedNumbers:document.getElementById('cred-allowed-numbers').value.trim(),autofitEmail:document.getElementById('cred-autofit-email').value.trim(),autofitPassword:document.getElementById('cred-autofit-password').value.trim(),imapHost:document.getElementById('cred-imap-host').value.trim(),imapUser:document.getElementById('cred-imap-user').value.trim(),imapPassword:document.getElementById('cred-imap-password').value.trim()};
+  await api('POST','/credentials',d);showToast('פרטי חיבור נשמרו');document.getElementById('cred-status').textContent='נשמר! הפעל מחדש לחיבור.';document.getElementById('cred-status').style.color='var(--green)';
+}
 
-  // ===== LOAD SETTINGS =====
-  async function loadSettings() {
-    try {
-      const s = await api('GET', '/settings');
-      if (s.weeklyReport) {
-        document.getElementById('weekly-day').value = s.weeklyReport.dayOfWeek ?? 0;
-        document.getElementById('weekly-time').value = s.weeklyReport.time ?? '09:00';
+// ===== ACTIONS =====
+async function sendMessage(){const t=document.getElementById('send-target').value,ti=document.getElementById('send-title').value,b=document.getElementById('send-body').value;if(!ti||!b){showToast('מלא כותרת ותוכן');return;}try{await api('POST','/action/send-message',{target:t,title:ti,body:b});showToast('נשלח');closeModal('send-modal');document.getElementById('send-title').value='';document.getElementById('send-body').value='';}catch(e){showToast('שגיאה');}}
+async function addTodo(){const t=document.getElementById('todo-text').value;if(!t){showToast('כתוב משימה');return;}try{await api('POST','/action/add-todo',{text:t});showToast('נוסף');closeModal('todo-modal');document.getElementById('todo-text').value='';}catch(e){showToast('שגיאה');}}
 
-        const wToggle = document.getElementById('weekly-toggle');
-        wToggle.classList.toggle('on', s.weeklyReport.enabled !== false);
+// ===== SETTINGS LOAD =====
+async function loadSettings(){try{const s=await api('GET','/settings');if(s.weeklyReport){document.getElementById('weekly-day').value=s.weeklyReport.dayOfWeek??0;document.getElementById('weekly-time').value=s.weeklyReport.time??'09:00';document.getElementById('weekly-toggle').classList.toggle('on',s.weeklyReport.enabled!==false);if(s.weeklyReport.metrics)document.querySelectorAll('[data-metric]').forEach(b=>{b.classList.toggle('on',s.weeklyReport.metrics[b.dataset.metric]!==false);});}if(s.messageTemplate)document.getElementById('template-editor').value=s.messageTemplate;}catch(e){}}
 
-        if (s.weeklyReport.metrics) {
-          document.querySelectorAll('[data-metric]').forEach(btn => {
-            const metric = btn.dataset.metric;
-            btn.classList.toggle('on', s.weeklyReport.metrics[metric] !== false);
-          });
-        }
-      }
-      if (s.messageTemplate) {
-        document.getElementById('template-editor').value = s.messageTemplate;
-      }
-    } catch (e) {
-      console.error('Failed to load settings:', e);
-    }
-  }
-
-  // ===== INIT =====
-  refreshStatus();
-  loadSettings();
-  loadLogs();
-
-  // Refresh every 30 seconds
-  setInterval(refreshStatus, 30000);
-  setInterval(loadLogs, 30000);
+// ===== INIT =====
+refreshStatus();loadSettings();loadCredentials();loadLogs('dash-log',8);
+setInterval(refreshStatus,30000);setInterval(()=>loadLogs('dash-log',8),30000);
 </script>
-
 </body>
 </html>
