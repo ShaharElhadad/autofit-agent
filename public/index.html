@@ -27,12 +27,12 @@
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex}
+body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.app-layout{display:flex;flex:1;overflow:hidden}
 
 /* ========== SIDEBAR ========== */
-.sidebar{width:240px;background:var(--bg-sidebar);border-left:1px solid var(--border);display:flex;flex-direction:column;height:100vh;flex-shrink:0}
-.sidebar-logo{padding:24px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
-.sidebar-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--orange),var(--orange-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff}
+.sidebar{width:240px;background:var(--bg-sidebar);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sidebar-logo{display:none}
 .sidebar-logo-text{font-size:16px;font-weight:700}
 .sidebar-logo-text span{color:var(--orange)}
 .sidebar-nav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:2px}
@@ -48,12 +48,15 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);heigh
 .sidebar-footer-text{font-size:12px;color:var(--text-dim)}
 
 /* ========== MAIN ========== */
-.main-wrapper{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.main-wrapper{flex:1;display:flex;flex-direction:column;overflow:hidden}
 
 /* Topbar */
-.topbar{height:56px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0}
-.topbar-title{font-size:18px;font-weight:700}
-.topbar-right{display:flex;align-items:center;gap:16px}
+.topbar{height:56px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0;width:100%}
+.topbar-right-group{display:flex;align-items:center;gap:20px}
+.topbar-logo{font-size:17px;font-weight:700}
+.topbar-logo span{color:var(--orange)}
+.topbar-title{font-size:17px;font-weight:700}
+.topbar-left{display:flex;align-items:center;gap:16px}
 .topbar-status{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500}
 .topbar-status.ok{background:var(--green-dim);color:var(--green)}
 .topbar-status.err{background:var(--red-dim);color:var(--red)}
@@ -171,12 +174,23 @@ select,input[type="time"]{padding:7px 12px;border:1px solid var(--border);border
 </head>
 <body>
 
+<!-- TOPBAR (full width) -->
+<header class="topbar">
+  <div class="topbar-right-group">
+    <div class="topbar-logo"><span>AutoFit</span> Agent</div>
+    <div class="topbar-title" id="page-title">דשבורד</div>
+  </div>
+  <div class="topbar-left">
+    <div class="topbar-status" id="topbar-autofit"><span class="status-dot err" style="margin-left:6px"></span>AutoFit</div>
+    <div class="topbar-status" id="topbar-whatsapp"><span class="status-dot err" style="margin-left:6px"></span>WhatsApp</div>
+  </div>
+</header>
+
+<!-- APP LAYOUT -->
+<div class="app-layout">
+
 <!-- SIDEBAR -->
 <aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="sidebar-logo-icon">AF</div>
-    <div class="sidebar-logo-text"><span>AutoFit</span> Agent</div>
-  </div>
   <nav class="sidebar-nav">
     <div class="nav-section">ראשי</div>
     <div class="nav-item active" data-page="dashboard">
@@ -210,14 +224,6 @@ select,input[type="time"]{padding:7px 12px;border:1px solid var(--border);border
 
 <!-- MAIN -->
 <div class="main-wrapper">
-  <header class="topbar">
-    <div class="topbar-title" id="page-title">דשבורד</div>
-    <div class="topbar-right">
-      <div class="topbar-status" id="topbar-autofit"><span class="status-dot err" style="margin-left:6px"></span>AutoFit</div>
-      <div class="topbar-status" id="topbar-whatsapp"><span class="status-dot err" style="margin-left:6px"></span>WhatsApp</div>
-    </div>
-  </header>
-
   <div class="content">
 
     <!-- PAGE: DASHBOARD -->
@@ -303,20 +309,31 @@ select,input[type="time"]{padding:7px 12px;border:1px solid var(--border);border
             <button class="toggle on" id="weekly-toggle" onclick="toggleWeekly()"></button>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">יום שליחה</div><div class="setting-desc">באיזה יום לשלוח</div></div>
+            <div><div class="setting-label">דדליין למתאמנים</div><div class="setting-desc">עד מתי המתאמנים צריכים למלא את הטופס</div></div>
+            <select id="weekly-deadline" onchange="saveWeeklySettings()">
+              <option value="0">ראשון</option><option value="1">שני</option><option value="2">שלישי</option><option value="3">רביעי</option><option value="4" selected>חמישי</option><option value="5">שישי</option><option value="6">שבת</option>
+            </select>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">יום שליחת סיכום</div><div class="setting-desc">מתי הסוכן שולח את הסיכום השבועי</div></div>
             <select id="weekly-day" onchange="saveWeeklySettings()">
-              <option value="0">ראשון</option><option value="1">שני</option><option value="2">שלישי</option><option value="3">רביעי</option><option value="4">חמישי</option><option value="5">שישי</option><option value="6">שבת</option>
+              <option value="0">ראשון</option><option value="1">שני</option><option value="2">שלישי</option><option value="3">רביעי</option><option value="4">חמישי</option><option value="5" selected>שישי</option><option value="6">שבת</option>
             </select>
           </div>
           <div class="setting-row">
             <div><div class="setting-label">שעת שליחה</div></div>
             <input type="time" id="weekly-time" value="09:00" onchange="saveWeeklySettings()">
           </div>
-          <div class="setting-row"><div><div class="setting-label">משקל</div></div><button class="toggle on" data-metric="weight" onclick="toggleMetric(this)"></button></div>
-          <div class="setting-row"><div><div class="setting-label">צעדים</div></div><button class="toggle on" data-metric="steps" onclick="toggleMetric(this)"></button></div>
-          <div class="setting-row"><div><div class="setting-label">אימונים</div></div><button class="toggle on" data-metric="training" onclick="toggleMetric(this)"></button></div>
-          <div class="setting-row"><div><div class="setting-label">תזונה</div></div><button class="toggle on" data-metric="nutrition" onclick="toggleMetric(this)"></button></div>
-          <div class="setting-row"><div><div class="setting-label">שתייה</div></div><button class="toggle on" data-metric="water" onclick="toggleMetric(this)"></button></div>
+          <div style="padding:14px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-dim)">סעיפים בסיכום:</div>
+          <div class="setting-row"><div><div class="setting-label">צעדים / אירובי</div></div><button class="toggle on" data-metric="steps" onclick="toggleMetric(this)"></button></div>
+          <div class="setting-row"><div><div class="setting-label">התקדמות במשקל</div></div><button class="toggle on" data-metric="weightProgress" onclick="toggleMetric(this)"></button></div>
+          <div class="setting-row"><div><div class="setting-label">התקדמות מתחילת התהליך</div></div><button class="toggle on" data-metric="totalProgress" onclick="toggleMetric(this)"></button></div>
+          <div class="setting-row"><div><div class="setting-label">שעות שינה</div></div><button class="toggle on" data-metric="sleep" onclick="toggleMetric(this)"></button></div>
+          <div class="setting-row"><div><div class="setting-label">שיפור ביצועים</div></div><button class="toggle on" data-metric="performance" onclick="toggleMetric(this)"></button></div>
+          <div class="setting-row"><div><div class="setting-label">היקפים</div></div><button class="toggle on" data-metric="measurements" onclick="toggleMetric(this)"></button></div>
+          <div class="setting-row"><div><div class="setting-label">עדכון תכנית אימון</div></div><button class="toggle on" data-metric="trainingUpdate" onclick="toggleMetric(this)"></button></div>
+          <div class="setting-row"><div><div class="setting-label">עדכון תפריט תזונה</div></div><button class="toggle on" data-metric="nutritionUpdate" onclick="toggleMetric(this)"></button></div>
+          <div class="setting-row"><div><div class="setting-label">משימות ומטרות</div></div><button class="toggle on" data-metric="goals" onclick="toggleMetric(this)"></button></div>
         </div>
         <div class="card">
           <div class="card-header">
@@ -326,15 +343,24 @@ select,input[type="time"]{padding:7px 12px;border:1px solid var(--border);border
             </div>
           </div>
           <div class="field">
-            <textarea id="template-editor" style="min-height:200px">שלום {name},
+            <textarea id="template-editor" style="min-height:340px">שלום {name}, סיכום שבועי:
 
-סיכום השבוע שלך:
-{metrics}
-
-{personalMessage}
+צעדים/אירובי - {steps}
+התקדמות במשקל גוף - {weightProgress}
+סה"כ התקדמות מתחילת התהליך - {totalProgress}
+שעות שינה - {sleep}
+שיפור ביצועים - {performance}
+היקפים - {measurements}
+עדכון תכנית אימון - {trainingUpdate}
+עדכון תפריט תזונה - {nutritionUpdate}
+עדכון צעדים/אירובי - {stepsUpdate}
+סיכום כללי מהצד שלי - {coachSummary}
+משימות לשבוע הקרוב - {weekTasks}
+מטרות לשבוע הקרוב - {weekGoals}
+עמידה במטרה השבועית - {goalStatus}
 
 המאמן שלך</textarea>
-            <div class="hint">{name} = שם הלקוח, {metrics} = נתוני מעקב, {personalMessage} = הודעה מותאמת</div>
+            <div class="hint">משתנים: {name} {steps} {weightProgress} {totalProgress} {sleep} {performance} {measurements} {trainingUpdate} {nutritionUpdate} {stepsUpdate} {coachSummary} {weekTasks} {weekGoals} {goalStatus}</div>
           </div>
           <button class="btn btn-primary" onclick="saveTemplate()">שמור תבנית</button>
         </div>
@@ -384,6 +410,7 @@ select,input[type="time"]{padding:7px 12px;border:1px solid var(--border);border
 
   </div>
 </div>
+</div> <!-- /app-layout -->
 
 <!-- MODALS -->
 <div class="modal-overlay" id="send-modal">
@@ -463,7 +490,7 @@ async function toggleAgent(){const d=await api('POST','/agent/toggle');document.
 // ===== WEEKLY =====
 async function toggleWeekly(){const t=document.getElementById('weekly-toggle');t.classList.toggle('on');await api('POST','/settings',{weeklyReport:{enabled:t.classList.contains('on')}});showToast('נשמר');}
 function toggleMetric(b){b.classList.toggle('on');saveWeeklySettings();}
-async function saveWeeklySettings(){const m={};document.querySelectorAll('[data-metric]').forEach(b=>{m[b.dataset.metric]=b.classList.contains('on');});await api('POST','/settings',{weeklyReport:{dayOfWeek:+document.getElementById('weekly-day').value,time:document.getElementById('weekly-time').value,metrics:m}});showToast('נשמר');}
+async function saveWeeklySettings(){const m={};document.querySelectorAll('[data-metric]').forEach(b=>{m[b.dataset.metric]=b.classList.contains('on');});await api('POST','/settings',{weeklyReport:{deadline:+document.getElementById('weekly-deadline').value,dayOfWeek:+document.getElementById('weekly-day').value,time:document.getElementById('weekly-time').value,metrics:m}});showToast('נשמר');}
 async function saveTemplate(){await api('POST','/settings',{messageTemplate:document.getElementById('template-editor').value});showToast('התבנית נשמרה');}
 async function testWeekly(){showToast('שולח...');try{const r=await api('POST','/action/test-weekly');showToast('נשלחו '+(r.sent||0)+' עדכונים');}catch(e){showToast('שגיאה');}}
 
