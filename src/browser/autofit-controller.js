@@ -55,17 +55,11 @@ class AutoFitController {
       const emailInput = await this.page.waitForSelector('input[type="email"], input[name="email"]', { timeout: 10000 });
       await emailInput.fill(process.env.AUTOFIT_EMAIL);
 
-      // Fill password if visible
-      const passwordInput = await this.page.$('input[type="password"]');
-      if (passwordInput) {
-        await passwordInput.fill(process.env.AUTOFIT_PASSWORD);
-      }
-
-      // Click login button
-      const loginBtn = await this.page.$('button[type="submit"], button:has-text("כניסה"), button:has-text("התחבר")');
+      // Click login/send code button
+      const loginBtn = await this.page.$('button[type="submit"], button:has-text("כניסה"), button:has-text("התחבר"), button:has-text("שלח")');
       if (loginBtn) await loginBtn.click();
 
-      // Wait for possible 6-digit code input
+      // Wait for 6-digit code input
       await this.page.waitForTimeout(3000);
 
       const codeInput = await this.page.$('input[maxlength="6"], input[type="tel"], input[placeholder*="קוד"]');
@@ -78,7 +72,7 @@ class AutoFitController {
         await codeInput.fill(code);
 
         // Submit the code
-        const submitBtn = await this.page.$('button[type="submit"], button:has-text("אימות"), button:has-text("אישור")');
+        const submitBtn = await this.page.$('button[type="submit"], button:has-text("אימות"), button:has-text("אישור"), button:has-text("כניסה")');
         if (submitBtn) await submitBtn.click();
       }
 

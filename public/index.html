@@ -358,11 +358,10 @@ select,input[type="time"]{padding:7px 12px;border:1px solid var(--border);border
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
             <h4>AutoFit + מייל</h4>
           </div>
-          <div class="field"><label>אימייל AutoFit</label><input type="email" id="cred-autofit-email" placeholder="your@email.com" dir="ltr"></div>
-          <div class="field"><label>סיסמת AutoFit</label><input type="password" id="cred-autofit-password" placeholder="********" dir="ltr"></div>
-          <div class="field"><label>שרת מייל (IMAP)</label><input type="text" id="cred-imap-host" value="imap.gmail.com" dir="ltr"></div>
-          <div class="field"><label>אימייל לקודי אימות</label><input type="email" id="cred-imap-user" placeholder="your@gmail.com" dir="ltr"></div>
-          <div class="field"><label>סיסמת אפליקציה</label><input type="password" id="cred-imap-password" placeholder="xxxx xxxx xxxx xxxx" dir="ltr"><div class="hint">App Password מגוגל, לא הסיסמה הרגילה</div></div>
+          <div class="field"><label>אימייל AutoFit</label><input type="email" id="cred-autofit-email" placeholder="your@email.com" dir="ltr"><div class="hint">האימייל שאיתו נכנסים ל-AutoFit. אין צורך בסיסמה - המערכת שולחת קוד למייל</div></div>
+          <div class="field"><label>שרת מייל (IMAP)</label><input type="text" id="cred-imap-host" value="imap.gmail.com" dir="ltr"><div class="hint">אם המייל ב-Gmail אפשר להשאיר ככה</div></div>
+          <div class="field"><label>אימייל לקבלת קודי אימות</label><input type="email" id="cred-imap-user" placeholder="your@gmail.com" dir="ltr"><div class="hint">בדרך כלל אותו אימייל כמו AutoFit</div></div>
+          <div class="field"><label>סיסמת גישה למייל</label><input type="password" id="cred-imap-password" placeholder="" dir="ltr"><div class="hint">ב-Gmail צריך ליצור App Password (נעזור בהגדרה). בספקים אחרים - הסיסמה הרגילה</div></div>
         </div>
       </div>
       <button class="btn btn-primary" onclick="saveCredentials()" style="margin-top:4px">שמור פרטי חיבור</button>
@@ -485,9 +484,9 @@ async function loadLogs(target,count){
 async function clearLogs(){await api('DELETE','/logs');loadLogs('full-log',100);loadLogs('dash-log',8);showToast('הלוג נוקה');}
 
 // ===== CREDENTIALS =====
-async function loadCredentials(){try{const c=await api('GET','/credentials');if(c.greenApiInstanceId)document.getElementById('cred-greenapi-id').value=c.greenApiInstanceId;if(c.greenApiToken)document.getElementById('cred-greenapi-token').value=c.greenApiToken;if(c.allowedNumbers)document.getElementById('cred-allowed-numbers').value=c.allowedNumbers;if(c.autofitEmail)document.getElementById('cred-autofit-email').value=c.autofitEmail;if(c.autofitPassword)document.getElementById('cred-autofit-password').value=c.autofitPassword;if(c.imapHost)document.getElementById('cred-imap-host').value=c.imapHost;if(c.imapUser)document.getElementById('cred-imap-user').value=c.imapUser;if(c.imapPassword)document.getElementById('cred-imap-password').value=c.imapPassword;}catch(e){}}
+async function loadCredentials(){try{const c=await api('GET','/credentials');if(c.greenApiInstanceId)document.getElementById('cred-greenapi-id').value=c.greenApiInstanceId;if(c.greenApiToken)document.getElementById('cred-greenapi-token').value=c.greenApiToken;if(c.allowedNumbers)document.getElementById('cred-allowed-numbers').value=c.allowedNumbers;if(c.autofitEmail)document.getElementById('cred-autofit-email').value=c.autofitEmail;if(c.imapHost)document.getElementById('cred-imap-host').value=c.imapHost;if(c.imapUser)document.getElementById('cred-imap-user').value=c.imapUser;if(c.imapPassword)document.getElementById('cred-imap-password').value=c.imapPassword;}catch(e){}}
 async function saveCredentials(){
-  const d={greenApiInstanceId:document.getElementById('cred-greenapi-id').value.trim(),greenApiToken:document.getElementById('cred-greenapi-token').value.trim(),allowedNumbers:document.getElementById('cred-allowed-numbers').value.trim(),autofitEmail:document.getElementById('cred-autofit-email').value.trim(),autofitPassword:document.getElementById('cred-autofit-password').value.trim(),imapHost:document.getElementById('cred-imap-host').value.trim(),imapUser:document.getElementById('cred-imap-user').value.trim(),imapPassword:document.getElementById('cred-imap-password').value.trim()};
+  const d={greenApiInstanceId:document.getElementById('cred-greenapi-id').value.trim(),greenApiToken:document.getElementById('cred-greenapi-token').value.trim(),allowedNumbers:document.getElementById('cred-allowed-numbers').value.trim(),autofitEmail:document.getElementById('cred-autofit-email').value.trim(),imapHost:document.getElementById('cred-imap-host').value.trim(),imapUser:document.getElementById('cred-imap-user').value.trim(),imapPassword:document.getElementById('cred-imap-password').value.trim()};
   await api('POST','/credentials',d);showToast('פרטי חיבור נשמרו');document.getElementById('cred-status').textContent='נשמר! הפעל מחדש לחיבור.';document.getElementById('cred-status').style.color='var(--green)';
 }
 

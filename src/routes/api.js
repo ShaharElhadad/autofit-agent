@@ -124,7 +124,6 @@ router.get('/credentials', (req, res) => {
     greenApiToken: creds.greenApiToken ? mask(creds.greenApiToken) : '',
     allowedNumbers: creds.allowedNumbers || '',
     autofitEmail: creds.autofitEmail || '',
-    autofitPassword: creds.autofitPassword ? '********' : '',
     imapHost: creds.imapHost || 'imap.gmail.com',
     imapUser: creds.imapUser || '',
     imapPassword: creds.imapPassword ? '********' : ''
@@ -150,7 +149,6 @@ router.post('/credentials', (req, res) => {
   if (merged.greenApiToken) process.env.GREEN_API_TOKEN = merged.greenApiToken;
   if (merged.allowedNumbers) process.env.ALLOWED_NUMBERS = merged.allowedNumbers;
   if (merged.autofitEmail) process.env.AUTOFIT_EMAIL = merged.autofitEmail;
-  if (merged.autofitPassword) process.env.AUTOFIT_PASSWORD = merged.autofitPassword;
   if (merged.imapHost) process.env.IMAP_HOST = merged.imapHost;
   if (merged.imapUser) process.env.IMAP_USER = merged.imapUser;
   if (merged.imapPassword) process.env.IMAP_PASSWORD = merged.imapPassword;
